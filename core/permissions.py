@@ -1,4 +1,17 @@
 from rest_framework import permissions
+class IsAdminOrServiceAdvisor(permissions.BasePermission):
+    """
+    Allows access to users in Admin OR ServiceAdvisor group.
+    """
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        return (
+            user.groups.filter(name='Admin').exists() or
+            user.groups.filter(name='ServiceAdvisor').exists()
+        )
+from rest_framework import permissions
 
 class IsAdmin(permissions.BasePermission):
     """Allows access only to users in the 'Admin' group."""
